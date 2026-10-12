@@ -11,6 +11,20 @@
   programs.plasma = {
     enable = true;
     workspace.wallpaper = "${config.home.homeDirectory}/wallpapers/delysium.jpg";
+    kwin = {
+      effects = {
+        desktopSwitching.animation = "off";
+        #whimsy
+        fallApart.enable = true;
+        cube.enable = true;
+        #endwhimsy
+        hideCursor.hideOnTyping = true;
+        #whimsy?
+        slideBack.enable = true;
+        wobblyWindows.enable = true;
+      };
+      #virtualDesktops (I want to set this but first, time to cube
+    }; 
   };
 
   programs.bash = {
@@ -18,7 +32,7 @@
     shellAliases = {
       #important
       fuck = "echo you";
-      hc = "history -c";
+      hc = "hchc";
       hchw = "history -c && history -w";
       hchc = "history -c && history -w && clear";
       nrs = "snr";

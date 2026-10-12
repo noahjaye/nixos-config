@@ -129,8 +129,7 @@
   environment.systemPackages = with pkgs; [
     obsidian
     vscode
-    tmux
-    
+    gimp    
 #dual-boot things
     # efibootmgr
   ];
