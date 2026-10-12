@@ -31,14 +31,14 @@ let
 
   # this is the very best way to do this, I am sure.
   startLayout = pkgs.writeShellScript "start-layout" ''
-    sleep 10
+    sleep 3
     konsole --profile web-term --title web-term &
     firefox &
     obsidian &
     code &
     konsole --profile cod-term --title cod-term &
     konsole --profile nix-term --title nix-term &
-    firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
+    kate
   '';
 
 in
@@ -53,6 +53,7 @@ in
   programs.plasma = {
     enable = true;
     overrideConfig = true;
+    session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
     workspace.wallpaper = "${config.home.homeDirectory}/wallpapers/delysium.jpg";
     kwin = {
       effects = {
@@ -104,11 +105,16 @@ in
       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
       (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
 
-      # Nix: terminal left, second firefox right
+      # Nix: terminal left, second firefox right (fix second firefox!)
       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
-      (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Desktop_4"; geom = right; })
+      (mk { description = "Nix: kate"; class = "org.kde.kate"; desktop = "Desktop_4"; geom = right; })
     ];
-
+    shortcuts.kwin = {
+      "Switch to Desktop 1" = "Alt+A";
+      "Switch to Desktop 2" = "Alt+S";
+      "Switch to Desktop 3" = "Alt+D";
+      "Switch to Desktop 4" = "Alt+F";
+    };
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
@@ -131,7 +137,10 @@ in
     Name=Window layout
     Exec=${startLayout}
   '';
-
+  programs.konsole.profiles.nixos = {
+    name = "nix-term";
+    extraConfig.General.Directory = "/etc/nixos";
+  }
   programs.bash = {
     enable = true;
     shellAliases = {
