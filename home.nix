@@ -11,7 +11,7 @@ let
   mk = { description, class, title ? null, desktop, geom ? null, maximize ? false }: {
     inherit description;
     match = {
-      window-class = { value = class; type = "exact"; };
+      window-class = { value = class; type = "substring"; };
       window-types = [ "normal" ];
     } // lib.optionalAttrs (title != null) {
       title = { value = title; type = "substring"; };
