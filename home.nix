@@ -16,21 +16,30 @@ let
     } // lib.optionalAttrs (title != null) {
       title = { value = title; type = "substring"; };
     };
-    apply = { desktops = desktop; }
-      // lib.optionalAttrs (geom != null) geom
-      // lib.optionalAttrs maximize { maximizehoriz = true; maximizevert = true; };
+    apply = {
+      desktops = {
+        value = desktop;
+        apply = "force";
+      };
+    }
+    // lib.optionalAttrs (geom != null) geom
+    // lib.optionalAttrs maximize {
+      maximizehoriz = true;
+      maximizevert = true;
+    };
   };
+
   # this is the very best way to do this, I am sure.
   startLayout = pkgs.writeShellScript "start-layout" ''
     sleep 10
-    konsole --profile web-term --title web-term &
-    firefox &
-    obsidian &
-    code &
-    konsole --profile cod-term --title cod-term &
-    konsole --profile nix-term --title nix-term &
-    firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
+    konsole --profile web-term --title web-term
   '';
+#       firefox &
+#     obsidian &
+#     code &
+#     konsole --profile cod-term --title cod-term &
+#     konsole --profile nix-term --title nix-term &
+#     firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
 in
 {
   home.username = "noahjaye";
@@ -42,6 +51,7 @@ in
 
   programs.plasma = {
     enable = true;
+    overrideConfig = true;
     workspace.wallpaper = "${config.home.homeDirectory}/wallpapers/delysium.jpg";
     kwin = {
       effects = {
