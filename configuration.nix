@@ -130,6 +130,7 @@
     obsidian
     vscode
     gimp    
+    qemu
 #dual-boot things
     # efibootmgr
   ];
