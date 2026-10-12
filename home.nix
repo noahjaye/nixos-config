@@ -64,19 +64,19 @@ in
 
     window-rules = [
       # Web: terminal left, firefox right
-      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
-      (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
+      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Web"; geom = left; })
+      (mk { description = "Web: firefox";  class = "firefox"; desktop = "Web"; geom = right; })
 
       # Obs: fullscreen obsidian
-      (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
+      (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Obs"; maximize = true; })
 
       # Cod: vscode left, terminal right
-      (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
-      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
+      (mk { description = "Cod: vscode";   class = "code"; desktop = "Cod"; geom = left; })
+      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Cod"; geom = right; })
 
       # Nix: terminal left, second firefox right
-      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
-      (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Desktop_4"; geom = right; })
+      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Nix"; geom = left; })
+      (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Nix"; geom = right; })
     ];
 
     #! Set up custom panels soon enough
