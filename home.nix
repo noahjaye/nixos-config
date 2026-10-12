@@ -181,14 +181,14 @@ in
       __set_ps1() {
         local br status num brcolor
         br=$(git branch --show-current 2>/dev/null)
-        brcolor='\[\e[38;5;33m\]'            # blue: clean (your original)
+        brcolor='\[\e[38;5;33m\]'
         if [ -n "$br" ]; then
           status=$(git status --porcelain 2>/dev/null)
           if [ -n "$status" ]; then
             if grep -qv '^??' <<< "$status"; then
-              brcolor='\[\e[31m\]'           # red: modified/staged
+              brcolor='\[\e[31m\]'
             else
-              brcolor='\[\e[33m\]'           # yellow: only untracked
+              brcolor='\[\e[33m\]'
             fi
           fi
         fi
