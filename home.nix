@@ -190,7 +190,7 @@ in
             elif grep -q '^.[MDT]' <<< "$status"; then
               brcolor='\[\e[31m\]'
             else
-              brcolor='\[\e[35m\]'
+              brcolor='\[\e[32m\]'
             fi
           fi
         fi
