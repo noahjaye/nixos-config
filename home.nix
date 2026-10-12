@@ -120,6 +120,7 @@ in
       key = "Meta+Shift+N";
       command = "konsole --workdir /etc/nixos";
     };
+    input.keyboard.options = ["ctrl:ralt_rctrl"];
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
@@ -177,15 +178,25 @@ in
       complete -F _complete_alias "''${!BASH_ALIASES[@]}"
       FIGNORE=".lock"
       export NIX_SHELL_PRESERVE_PROMPT=1
-
       __set_ps1() {
-        local br num
+        local br status num brcolor
         br=$(git branch --show-current 2>/dev/null)
+        brcolor='\[\e[38;5;33m\]'            # blue: clean (your original)
+        if [ -n "$br" ]; then
+          status=$(git status --porcelain 2>/dev/null)
+          if [ -n "$status" ]; then
+            if grep -qv '^??' <<< "$status"; then
+              brcolor='\[\e[31m\]'           # red: modified/staged
+            else
+              brcolor='\[\e[33m\]'           # yellow: only untracked
+            fi
+          fi
+        fi
         num='\[\e[0m\]'
         if [ -n "$IN_NIX_SHELL" ]; then
           num='\[\e[38;5;46m\]'
         fi
-        PS1='\[\e[95m\]\u\[\e[0m\] \W(\[\e[38;5;33m\]'"$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
+        PS1='\[\e[95m\]\u\[\e[0m\] \W('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
       }
       PROMPT_COMMAND=__set_ps1
     '';
