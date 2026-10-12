@@ -22,10 +22,21 @@
         hideCursor.hideOnTyping = true;
         #whimsy?
         slideBack.enable = true;
-        wobblyWindows.enable = true;
+        #wobblyWindows.enable = true;
       };
-      #virtualDesktops (I want to set this but first, time to cube
+      virtualDesktops = {
+        number = 4;
+        rows = 2;
+        names = [
+        "Web"
+        "Obs"
+        "Cod"
+        "Nix"
+        ];
+      };
     }; 
+    #! Set up custom panels soon enough
+    spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
 
   programs.bash = {
