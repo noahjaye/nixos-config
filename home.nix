@@ -93,7 +93,7 @@ in
 #       ];
     window-rules = [
       # Web: terminal left, firefox right
-      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Dekstop_1"; geom = left; })
+      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
       (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
 
       # Obs: fullscreen obsidian
