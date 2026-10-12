@@ -38,7 +38,7 @@ let
     code &
     konsole --profile cod-term --title cod-term &
     konsole --profile nix-term --title nix-term --workdir /etc/nixos &
-    kate /etc/nixos/home.nix /etc/nixos/home.nix /etc/nixos/flake.nix
+    kate /etc/nixos/home.nix /etc/nixos/configuration.nix /etc/nixos/flake.nix
   '';
 
 in
