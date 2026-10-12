@@ -82,16 +82,18 @@ in
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
-  programs.konsole = {
-    enable = true;
-    profiles = lib.genAttrs [ "web-term" "cod-term" "nix-term" ] (n: {
-      name = n;
-      extraConfig.General = {
-        LocalTabTitleFormat = n;
-        RemoteTabTitleFormat = n;
-      };
-    });
-  };
+    # Three Konsole profiles that differ only by tab title. Parent=FALLBACK/
+  # inherits everything else (font, colours) from Konsole's defaults.
+  xdg.dataFile = lib.listToAttrs (map (n:
+  lib.nameValuePair "konsole/${n}.profile" {
+    text = ''
+      [General]
+      Name=${n}
+      Parent=FALLBACK/
+      LocalTabTitleFormat=${n}
+      RemoteTabTitleFormat=${n}
+    '';
+  }) [ "web-term" "cod-term" "nix-term" ]);
 
   xdg.configFile."autostart/window-layout.desktop".text = ''
     [Desktop Entry]
