@@ -63,10 +63,10 @@
         description = "Terminal on Nix";
         match = {
           window-class = { value = "org.kde.konsole"; type = "exact"; };
-          window-types = [ "Nix" ];
+          window-types = [ "normal" ];
         };
         apply.desktops = {
-          value = "Desktop_4";
+          value = "Nix";
           apply = "force";
         };
       }
