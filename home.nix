@@ -23,12 +23,12 @@ let
   # this is the very best way to do this, I am sure.
   startLayout = pkgs.writeShellScript "start-layout" ''
     sleep 10
-    konsole --profile web-term &
+    konsole --profile web-term --title web-term &
     firefox &
     obsidian &
     code &
-    konsole --profile cod-term &
-    konsole --profile nix-term &
+    konsole --profile cod-term --title cod-term &
+    konsole --profile nix-term --title nix-term &
     firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
   '';
 in
@@ -61,42 +61,42 @@ in
         names = [ "Web" "Obs" "Cod" "Nix" ];
       };
     };
-      window-rules = [
-        {
-          description = "TEST: Konsole on Web";
+#       window-rules = [
+#         {
+#           description = "TEST: Konsole on Web";
+#
+#           match = {
+#             window-class = {
+#               value = "konsole";
+#               type = "substring";
+#             };
+#             window-types = [ "normal" ];
+#           };
+#
+#           apply = {
+#             desktops = {
+#               value = "Desktop_1";
+#               apply = "force";
+#             };
+#           };
+#         }
+#       ];
+    window-rules = [
+      # Web: terminal left, firefox right
+      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Dekstop_1"; geom = left; })
+      (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
 
-          match = {
-            window-class = {
-              value = "konsole";
-              type = "substring";
-            };
-            window-types = [ "normal" ];
-          };
+      # Obs: fullscreen obsidian
+      (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
 
-          apply = {
-            desktops = {
-              value = "Desktop_1";
-              apply = "force";
-            };
-          };
-        }
-      ];
-#     window-rules = [
-#       # Web: terminal left, firefox right
-#       (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Dekstop_1"; geom = left; })
-#       (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
-#
-#       # Obs: fullscreen obsidian
-#       (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
-#
-#       # Cod: vscode left, terminal right
-#       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
-#       (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
-#
-#       # Nix: terminal left, second firefox right
-#       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
-#       (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Desktop_4"; geom = right; })
-#     ];
+      # Cod: vscode left, terminal right
+      (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
+      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
+
+      # Nix: terminal left, second firefox right
+      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
+      (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Desktop_4"; geom = right; })
+    ];
 
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
