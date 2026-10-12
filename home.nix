@@ -142,7 +142,7 @@ in
       hchc = "history -c && history -w && clear";
       nrs = "snr";
       #radar
-      snr = "sudo nixos-rebuild switch";
+      snr = "nixos-rebuild switch --sudo";
       #git
       ga = "git add .";
       gs = "git status";
