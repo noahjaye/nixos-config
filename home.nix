@@ -140,7 +140,7 @@ in
   programs.konsole.profiles.nixos = {
     name = "nix-term";
     extraConfig.General.Directory = "/etc/nixos";
-  }
+  };
   programs.bash = {
     enable = true;
     shellAliases = {
