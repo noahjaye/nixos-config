@@ -15,7 +15,7 @@
       effects = {
         desktopSwitching.animation = "off";
         #whimsy
-        fallApart.enable = true;
+        fallApart.enable = false;
         # https://www.youtube.com/watch?v=2X08SW8fok4
         cube.enable = true;
         #endwhimsy
@@ -26,7 +26,6 @@
       };
       virtualDesktops = {
         number = 4;
-        rows = 2;
         names = [
         "Web"
         "Obs"
@@ -34,7 +33,45 @@
         "Nix"
         ];
       };
+      window-rules = [
+        {
+          description = "Browser on Web";
+          match = {
+            window-class = { value = "firefox"; type = "exact"; };
+            window-types = [ "normal" ];
+          };
+          apply.desktops = "Desktop_1";
+        }
+        {
+          description = "Obsidian on Obs";
+          match = {
+            window-class = { value = "obsidian"; type = "exact"; };
+            window-types = [ "normal" ];
+          };
+          apply.desktops = "Desktop_2";
+        }
+        {
+          description = "VS Code on Cod";
+          match = {
+            window-class = { value = "code"; type = "exact"; };
+            window-types = [ "normal" ];
+          };
+          apply.desktops = "Desktop_3";
+        }
+        {
+          description = "Terminal on Nix";
+          match = {
+            window-class = { value = "org.kde.konsole"; type = "exact"; };
+            window-types = [ "normal" ];
+          };
+          apply.desktops = {
+            value = "Desktop_4";
+            apply = "force";
+          };
+        }
+      ];
     }; 
+
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
