@@ -38,7 +38,7 @@ let
     code &
     konsole --profile cod-term --title cod-term &
     konsole --profile nix-term --title nix-term --workdir /etc/nixos &
-    kate
+    kate /etc/nixos/home.nix /etc/nixos/home.nix /etc/nixos/flake.nix
   '';
 
 in
@@ -185,10 +185,12 @@ in
         if [ -n "$br" ]; then
           status=$(git status --porcelain 2>/dev/null)
           if [ -n "$status" ]; then
-            if grep -qv '^??' <<< "$status"; then
+            if grep -q '^??' <<< "$status"; then
+              brcolor='\[\e[33m\]'
+            elif grep -q '^.[MDT]' <<< "$status"; then
               brcolor='\[\e[31m\]'
             else
-              brcolor='\[\e[33m\]'
+              brcolor='\[\e[35m\]'
             fi
           fi
         fi
