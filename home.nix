@@ -32,14 +32,15 @@ let
   # this is the very best way to do this, I am sure.
   startLayout = pkgs.writeShellScript "start-layout" ''
     sleep 10
-    konsole --profile web-term --title web-term
+    konsole --profile web-term --title web-term &
+    firefox &
+    obsidian &
+    code &
+    konsole --profile cod-term --title cod-term &
+    konsole --profile nix-term --title nix-term &
+    firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
   '';
-#       firefox &
-#     obsidian &
-#     code &
-#     konsole --profile cod-term --title cod-term &
-#     konsole --profile nix-term --title nix-term &
-#     firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
+
 in
 {
   home.username = "noahjaye";
