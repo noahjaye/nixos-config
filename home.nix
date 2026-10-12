@@ -1,5 +1,37 @@
-{ config, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 
+let
+  screen = { w = 1920; h = 1080; panel = 44; };
+
+  half    = screen.w / 2;
+  usableH = screen.h - screen.panel;
+  left  = { position = "0,0";                  size = "${toString half},${toString usableH}"; };
+  right = { position = "${toString half},0";   size = "${toString half},${toString usableH}"; };
+
+  mk = { description, class, title ? null, desktop, geom ? null, maximize ? false }: {
+    inherit description;
+    match = {
+      window-class = { value = class; type = "exact"; };
+      window-types = [ "normal" ];
+    } // lib.optionalAttrs (title != null) {
+      title = { value = title; type = "substring"; };
+    };
+    apply = { desktops = desktop; }
+      // lib.optionalAttrs (geom != null) geom
+      // lib.optionalAttrs maximize { maximizehoriz = true; maximizevert = true; };
+  };
+  # this is the very best way to do this, I am sure.
+  startLayout = pkgs.writeShellScript "start-layout" ''
+    sleep 3
+    konsole --profile web-term &
+    firefox &
+    obsidian &
+    code &
+    konsole --profile cod-term &
+    konsole --profile nix-term &
+    firefox --no-remote --name firefox-nix --profile "$HOME/.mozilla/firefox-nix" &
+  '';
+in
 {
   home.username = "noahjaye";
   home.homeDirectory = "/home/noahjaye";
@@ -21,60 +53,52 @@
         #endwhimsy
         hideCursor.hideOnTyping = true;
         #whimsy?
-        slideBack.enable = true;
+        slideBack.enable = false;
         #wobblyWindows.enable = true;
       };
       virtualDesktops = {
         number = 4;
-        names = [
-        "Web"
-        "Obs"
-        "Cod"
-        "Nix"
-        ];
+        names = [ "Web" "Obs" "Cod" "Nix" ];
       };
-    }; 
+    };
+
     window-rules = [
-      {
-        description = "Browser on Web";
-        match = {
-          window-class = { value = "firefox"; type = "exact"; };
-          window-types = [ "normal" ];
-        };
-        apply.desktops = "Web";
-      }
-      {
-        description = "Obsidian on Obs";
-        match = {
-          window-class = { value = "obsidian"; type = "exact"; };
-          window-types = [ "normal" ];
-        };
-        apply.desktops = "Obs";
-      }
-      {
-        description = "VS Code on Cod";
-        match = {
-          window-class = { value = "code"; type = "exact"; };
-          window-types = [ "normal" ];
-        };
-        apply.desktops = "Cod";
-      }
-      {
-        description = "Terminal on Nix";
-        match = {
-          window-class = { value = "org.kde.konsole"; type = "exact"; };
-          window-types = [ "normal" ];
-        };
-        apply.desktops = {
-          value = "Nix";
-          apply = "force";
-        };
-      }
+      # Web: terminal left, firefox right
+      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
+      (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
+
+      # Obs: fullscreen obsidian
+      (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
+
+      # Cod: vscode left, terminal right
+      (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
+      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
+
+      # Nix: terminal left, second firefox right
+      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
+      (mk { description = "Nix: firefox";  class = "firefox-nix"; desktop = "Desktop_4"; geom = right; })
     ];
 
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
+  programs.konsole = {
+    enable = true;
+    profiles = lib.genAttrs [ "web-term" "cod-term" "nix-term" ] (n: {
+      name = n;
+      extraConfig.General = {
+        LocalTabTitleFormat = n;
+        RemoteTabTitleFormat = n;
+      };
+    });
+  };
+
+  xdg.configFile."autostart/window-layout.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Window layout
+    Exec=${startLayout}
+  '';
 
   programs.bash = {
     enable = true;
@@ -102,23 +126,23 @@
       nf = "nix flake";
       nd = "nix develop";
     };
-  initExtra = ''
-    source "$(command -v complete_alias)"
-    complete -F _complete_alias "''${!BASH_ALIASES[@]}"
-    FIGNORE=".lock"
-    export NIX_SHELL_PRESERVE_PROMPT=1
+    initExtra = ''
+      source "$(command -v complete_alias)"
+      complete -F _complete_alias "''${!BASH_ALIASES[@]}"
+      FIGNORE=".lock"
+      export NIX_SHELL_PRESERVE_PROMPT=1
 
-    __set_ps1() {
-      local br num
-      br=$(git branch --show-current 2>/dev/null)
-      num='\[\e[0m\]'
-      if [ -n "$IN_NIX_SHELL" ]; then
-        num='\[\e[38;5;46m\]'
-      fi
-      PS1='\[\e[95m\]\u\[\e[0m\] \W(\[\e[38;5;33m\]'"$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
-    }
-    PROMPT_COMMAND=__set_ps1
-  '';
+      __set_ps1() {
+        local br num
+        br=$(git branch --show-current 2>/dev/null)
+        num='\[\e[0m\]'
+        if [ -n "$IN_NIX_SHELL" ]; then
+          num='\[\e[38;5;46m\]'
+        fi
+        PS1='\[\e[95m\]\u\[\e[0m\] \W(\[\e[38;5;33m\]'"$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
+      }
+      PROMPT_COMMAND=__set_ps1
+    '';
   };
 
   home.packages = with pkgs; [
@@ -127,4 +151,3 @@
     complete-alias
   ];
 }
-
