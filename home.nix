@@ -37,7 +37,7 @@ let
     obsidian &
     code &
     konsole --profile cod-term --title cod-term &
-    konsole --profile nix-term --title nix-term &
+    konsole --profile nix-term --title nix-term --workdir /etc/nixos &
     kate
   '';
 
@@ -114,6 +114,11 @@ in
       "Switch to Desktop 2" = "Alt+S";
       "Switch to Desktop 3" = "Alt+D";
       "Switch to Desktop 4" = "Alt+F";
+    };
+    hotkeys.commands."konsole-nixos" = {
+      name = "Konsole in /etc/nixos";
+      key = "Meta+Shift+N";
+      command = "konsole --workdir /etc/nixos";
     };
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
