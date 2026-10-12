@@ -16,6 +16,7 @@
         desktopSwitching.animation = "off";
         #whimsy
         fallApart.enable = true;
+        # https://www.youtube.com/watch?v=2X08SW8fok4
         cube.enable = true;
         #endwhimsy
         hideCursor.hideOnTyping = true;
