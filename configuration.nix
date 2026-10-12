@@ -94,7 +94,7 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."noahjaye" = {
-    hashedPassword = builtins.readFile /home/noahjaye/password;
+#    hashedPassword = builtins.readFile "${config.home.homeDirectory}.password";
     isNormalUser = true;
     description = "Noah Jaye";
     extraGroups = [ "networkmanager" "wheel" ];
