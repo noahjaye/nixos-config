@@ -29,7 +29,7 @@
 	      memorySize = 4096;
 	      cores = 4;
 	    };
-            users.users.noahjaye.initialPassword = "vee-em";
+            users.users.noahjaye.initialPassword = "vm";
 	  };
 	}
       ];
