@@ -41,7 +41,7 @@
           window-class = { value = "firefox"; type = "exact"; };
           window-types = [ "normal" ];
         };
-        apply.desktops = "Desktop_1";
+        apply.desktops = "Web";
       }
       {
         description = "Obsidian on Obs";
@@ -49,7 +49,7 @@
           window-class = { value = "obsidian"; type = "exact"; };
           window-types = [ "normal" ];
         };
-        apply.desktops = "Desktop_2";
+        apply.desktops = "Obs";
       }
       {
         description = "VS Code on Cod";
@@ -57,13 +57,13 @@
           window-class = { value = "code"; type = "exact"; };
           window-types = [ "normal" ];
         };
-        apply.desktops = "Desktop_3";
+        apply.desktops = "Cod";
       }
       {
         description = "Terminal on Nix";
         match = {
           window-class = { value = "org.kde.konsole"; type = "exact"; };
-          window-types = [ "normal" ];
+          window-types = [ "Nix" ];
         };
         apply.desktops = {
           value = "Desktop_4";
