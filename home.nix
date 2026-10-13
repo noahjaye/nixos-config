@@ -251,7 +251,7 @@ in
       hchc = "history -c && history -w && clear";
       nrs = "snr";
       #radar
-      snr = "nixos-rebuild switch --sudo";
+      snr = "powerprofilesctl launch --profile performance nixos-rebuild switch --sudo";
       #git
       ga = "git add .";
       gs = "git status";
