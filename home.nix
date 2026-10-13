@@ -7,25 +7,23 @@ let
   usableH = screen.h - screen.panel;
   halfH   = usableH / 2;
 
-  region = x: y: w: h: {
+    region = x: y: w: h: {
     position = "${toString x},${toString y}";
     size     = "${toString w},${toString h}";
   };
 
-  # full-height halves
-  left  = region 0    0 half usableH;
+   left  = region 0    0 half usableH;
   right = region half 0 half usableH;
 
-  # quadrants
   topLeft     = region 0    0     half halfH;
   topRight    = region half 0     half halfH;
   bottomLeft  = region 0    halfH half (usableH - halfH);
   bottomRight = region half halfH half (usableH - halfH);
 
-  mk = { description, class, title ? null, desktop, geom ? null, maximize ? false }: {
+  mk = { description, class, classType ? "substring", title ? null, desktop, geom ? null, maximize ? false, force ? false }: {
     inherit description;
     match = {
-      window-class = { value = class; type = "substring"; };
+      window-class = { value = class; type = classType; };
       window-types = [ "normal" ];
     } // lib.optionalAttrs (title != null) {
       title = { value = title; type = "substring"; };
@@ -36,7 +34,12 @@ let
         apply = "force";
       };
     }
-    // lib.optionalAttrs (geom != null) geom
+    // lib.optionalAttrs (geom != null) (
+      lib.mapAttrs (_: v: {
+        value = v;
+        apply = if force then "force" else "initially";
+      }) geom
+    )
     // lib.optionalAttrs maximize {
       maximizehoriz = true;
       maximizevert = true;
@@ -44,18 +47,93 @@ let
   };
 
   # this is the very best way to do this, I am sure.
-  startLayout = pkgs.writeShellScript "start-layout" ''
-    sleep 4
+   startLayout = pkgs.writeShellScript "start-layout" ''
+    sleep 3
     konsole --profile web-term --title web-term &
-    firefox --new-window /etc/nixos/web-f.html &
-    firefox --new-window /etc/nixos/cod-f.html &
+     firefox --new-window &
+    MOZ_APP_REMOTINGNAME=fx-cod firefox --new-instance -P cod \
+      --name fx-cod --class fx-cod --new-window &
     obsidian &
     code &
     konsole --profile cod-term --title cod-term &
     konsole --profile nix-term --title nix-term --workdir /etc/nixos &
-    kate /etc/nixos/home.nix /etc/nixos/configuration.nix /etc/nixos/flake.nix
+    kate /etc/nixos/flake.nix /etc/nixos/configuration.nix /etc/nixos/home.nix
   '';
+  foxCom = {
+    settings = {
+      # startup
+      "browser.startup.page" = 3;
+      "browser.startup.homepage" = "chrome://browser/content/blanktab.html";
+      "browser.newtabpage.enabled" = false;
+      "browser.tabs.insertAfterCurrent" = true;
 
+      # UI
+      "browser.toolbars.bookmarks.visibility" = "never";
+      "sidebar.visibility" = "hide-launcher";
+
+      # privacy
+      "privacy.resistFingerprinting" = true;
+      "privacy.clearOnShutdown_v2.formdata" = true;
+
+      # urlbarsearch
+      "browser.search.suggest.enabled" = false;
+      "browser.urlbar.showSearchSuggestionsFirst" = false;
+      "browser.urlbar.suggest.bookmark" = false;
+      "browser.urlbar.suggest.engines" = false;
+      "browser.urlbar.suggest.history" = false;
+      "browser.urlbar.suggest.quickactions" = false;
+      "browser.urlbar.suggest.recentsearches" = false;
+      "browser.urlbar.suggest.searches" = false;
+      "browser.urlbar.suggest.topsites" = false;
+
+      # NOAI/misc
+      "browser.ai.control.default" = "blocked";
+      "browser.ai.control.linkPreviewKeyPoints" = "blocked";
+      "browser.ai.control.pdfjsAltText" = "blocked";
+      "browser.ai.control.sidebarChatbot" = "blocked";
+      "browser.ai.control.smartTabGroups" = "blocked";
+      "browser.ai.control.smartWindow" = "blocked";
+      "browser.ai.control.translations" = "blocked";
+      "browser.ml.chat.enabled" = false;
+      "browser.ml.chat.page" = false;
+      "browser.ml.linkPreview.enabled" = false;
+      "browser.tabs.groups.smart.enabled" = false;
+      "browser.tabs.groups.smart.userEnabled" = false;
+      "browser.translations.enable" = false;
+      "browser.smartwindow.memories.generateFromConversation" = false;
+      "browser.smartwindow.memories.generateFromHistory" = false;
+      "extensions.ml.enabled" = false;
+      "pdfjs.enableAltText" = false;
+    };
+
+    search = {
+      force = true;
+      default = "ddg";
+      # thank you https://nix-community.github.io/home-manager/options/home-manager/programs/firefox.html
+      engines = {
+        nix-packages = {
+          name = "Nix Packages";
+          urls = [{
+            template = "https://search.nixos.org/packages";
+            params = [
+              { name = "type"; value = "packages"; }
+              { name = "query"; value = "{searchTerms}"; }
+            ];
+          }];
+
+          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@np" ];
+        };
+
+        nixos-wiki = {
+          name = "NixOS Wiki";
+          urls = [{ template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; }];
+          iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
+          definedAliases = [ "@nw" ];
+        };
+      };
+    };
+  };
 in
 {
   home.username = "noahjaye";
@@ -111,7 +189,7 @@ in
     window-rules = [
       # Web: terminal left, firefox right
       (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
-      (mk { description = "Web: firefox";  class = "firefox"; title = "web"; desktop = "Desktop_1"; geom = right; })
+      (mk { description = "Web: firefox"; class = "^(?!.*fx-cod).*firefox"; classType = "regex"; desktop = "Desktop_1"; geom = right; force = true; })
 
       # Obs: fullscreen obsidian
       (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
@@ -119,12 +197,14 @@ in
       # Cod: vscode left, terminal bottom right, firefox top right
       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
       (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = bottomRight; })
-      (mk { description = "Web: firefox";  class = "firefox"; title = "cod"; desktop = "Desktop_1"; geom = topRight; })
+        (mk { description = "Cod: firefox"; class = "fx-cod"; desktop = "Desktop_3"; geom = topRight; force = true; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
       (mk { description = "Nix: kate"; class = "org.kde.kate"; desktop = "Desktop_4"; geom = right; })
     ];
+
+    #is this a reasonable use of alt?
     shortcuts.kwin = {
       "Switch to Desktop 1" = "Alt+A";
       "Switch to Desktop 2" = "Alt+S";
@@ -140,8 +220,6 @@ in
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
   };
-    # Three Konsole profiles that differ only by tab title. Parent=FALLBACK/
-  # inherits everything else (font, colours) from Konsole's defaults.
   xdg.dataFile = lib.listToAttrs (map (n:
   lib.nameValuePair "konsole/${n}.profile" {
     text = ''
@@ -199,11 +277,9 @@ in
         br=$(git branch --show-current 2>/dev/null)
         brcolor='\[\e[38;5;33m\]'
         if [ -n "$br" ]; then
-          status=$(git status --porcelain 2>/dev/null)
+          status=$(git status --short 2>/dev/null)
           if [ -n "$status" ]; then
-            if grep -q '^??' <<< "$status"; then
-              brcolor='\[\e[33m\]'
-            elif grep -q '^.[MDT]' <<< "$status"; then
+            if grep -q '^.[^ ]' <<< "$status"; then
               brcolor='\[\e[31m\]'
             else
               brcolor='\[\e[32m\]'
@@ -219,7 +295,13 @@ in
       PROMPT_COMMAND=__set_ps1
     '';
   };
-
+  programs.firefox = {
+    enable = true;
+      profiles = {
+        default = foxCom // { id = 0; isDefault = true; path = "w9xfxn15.default"; };
+        cod     = foxCom // { id = 1; };
+      };
+  };
   home.packages = with pkgs; [
     bat
     wl-clipboard

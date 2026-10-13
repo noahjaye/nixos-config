@@ -103,9 +103,6 @@
     #  thunderbird
     ];
   };
-
-  # Install firefox.
-  programs.firefox.enable = true;
  
 
   # Install not firefox
