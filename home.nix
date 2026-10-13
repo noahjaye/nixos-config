@@ -51,7 +51,7 @@ let
 
   # this is the very best way to do this, I am sure.
    startLayout = pkgs.writeShellScript "start-layout" ''
-    sleep 3
+   sudo powerprofilesctl launch --profile performance
     konsole --profile web-term --title web-term &
      firefox --new-window &
     MOZ_APP_REMOTINGNAME=fx-cod firefox --new-instance -P cod \
@@ -134,9 +134,23 @@ let
           iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
           definedAliases = [ "@nw" ];
         };
+        nixos-options = {
+          name = "NixOS Options";
+          urls = [{
+            template = "https://search.nixos.org/options";
+            params = [
+              { name = "type"; value = "options"; }
+              { name = "query"; value = "{searchTerms}"; }
+            ];
+          }];
+
+          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@no" ];
+        };
       };
     };
   };
+
 in
 {
   home.username = "noahjaye";
@@ -203,7 +217,7 @@ in
         (mk { description = "Cod: firefox"; class = "fx-cod"; desktop = "Desktop_3"; geom = topRight; force = true; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
-      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
+      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; force = true; })
       (mk { description = "Nix: kate"; class = "org.kde.kate"; desktop = "Desktop_4"; geom = right; })
     ];
 
@@ -250,11 +264,11 @@ in
       #important
       fuck = "echo you";
       hc = "hchc";
-      hchw = "history -c && history -w";
-      hchc = "history -c && history -w && clear";
+      hchw = "history -r && history -a /home/noahjaye/myhis.txt && history -c";
+      hchc = "hchw && clear";
       nrs = "snr";
       #radar
-      snr = "sudo powerprofilesctl launch --profile performance nixos-rebuild switch --sudo";
+      snr = "sudo powerprofilesctl launch --profile performance nixos-rebuild switch";
       #git
       ga = "git add .";
       gs = "git status";
@@ -269,6 +283,8 @@ in
       #flakes
       nf = "nix flake";
       nd = "nix develop";
+      # code
+      c = "code -r .";
     };
     initExtra = ''
       source "$(command -v complete_alias)"
@@ -301,17 +317,83 @@ in
   programs.firefox = {
     enable = true;
       profiles = {
+      # bad, probably bite bullet and hand over path
         default = foxCom // { id = 0; isDefault = true; path = "w9xfxn15.default"; };
         cod     = foxCom // { id = 1; };
+      };
+      policies = {
+        ExtensionSettings =
+          let
+            moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
+          in {
+            "*" .installation_mode = "blocked";
+
+            "uBlock0@raymondhill.net" = {
+              install_url = moz "ublock-origin";
+              installation_mode = "force_installed";
+              updates_disabled = true;
+            };
+
+            "{74145f27-f039-47ce-a470-a662b129930a}" = {
+              install_url = moz "clearurls";
+              installation_mode = "force_installed";
+              updates_disabled = true;
+            };
+          };
+
+        # Extension configuration
+        "3rdparty".Extensions = {
+          "uBlock0@raymondhill.net".adminSettings = {
+            userSettings = rec {
+              uiTheme = "dark";
+              uiAccentCustom = true;
+              uiAccentCustom0 = "#8300ff";
+
+              importedLists = [
+                "https://filters.adtidy.org/extension/ublock/filters/3.txt"
+                "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+              ];
+
+              externalLists = lib.concatStringsSep "\n" importedLists;
+            };
+
+            selectedFilterLists = [
+              "CZE-0"
+              "adguard-generic"
+              "adguard-annoyance"
+              "adguard-social"
+              "adguard-spyware-url"
+              "easylist"
+              "easyprivacy"
+              "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+              "plowe-0"
+              "ublock-abuse"
+              "ublock-badware"
+              "ublock-filters"
+              "ublock-privacy"
+              "ublock-quick-fixes"
+              "ublock-unbreak"
+              "urlhaus-1"
+            ];
+          };
+        };
       };
   };
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
   };
+  services.syncthing.enable = true;
   home.packages = with pkgs; [
     bat
     wl-clipboard
     complete-alias
+    (writeShellApplication {
+      name = "catc";
+      runtimeInputs = [ coreutils wl-clipboard ];
+      text = ''
+        cat "$@" | wl-copy
+      '';
+    })
   ];
 }

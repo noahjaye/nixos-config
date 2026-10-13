@@ -24,9 +24,10 @@
 
 
   # Use the systemd-boot EFI boot loader.
-  # boot.loader.systemd-boot.enable = true;
-  # boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.enable = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.grub.enable = false;
   boot.loader.grub.device = "nodev";
   boot.loader.grub.useOSProber = true;
   networking.hostName = "nixos"; # Define your hostname.
@@ -89,6 +90,8 @@
     # jack.enable = true;
   };
 
+  services.openssh.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
@@ -129,6 +132,8 @@
     vscode
     gimp    
     qemu
+    keepassxc
+    tmux
 #dual-boot things
     # efibootmgr
   ];
