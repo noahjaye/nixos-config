@@ -31,7 +31,7 @@ let
 
   # this is the very best way to do this, I am sure.
   startLayout = pkgs.writeShellScript "start-layout" ''
-    sleep 3
+    sleep 4
     konsole --profile web-term --title web-term &
     firefox &
     obsidian &
