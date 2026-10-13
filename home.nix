@@ -15,10 +15,13 @@ let
    left  = region 0    0 half usableH;
   right = region half 0 half usableH;
 
-  topLeft     = region 0    0     half halfH;
-  topRight    = region half 0     half halfH;
-  bottomLeft  = region 0    halfH half (usableH - halfH);
-  bottomRight = region half halfH half (usableH - halfH);
+  # I am lazy
+  split = usableH * 2 / 3;
+
+  topLeft     = region 0    0      half halfH;
+  topRight    = region half 0      half split;
+  bottomLeft  = region 0    halfH  half (usableH - halfH);
+  bottomRight = region half split half (usableH - split);
 
   mk = { description, class, classType ? "substring", title ? null, desktop, geom ? null, maximize ? false, force ? false }: {
     inherit description;
@@ -55,7 +58,7 @@ let
       --name fx-cod --class fx-cod --new-window &
     obsidian &
     code &
-    konsole --profile cod-term --title cod-term &
+    konsole --profile cod-term --title cod-term --workdir /home/noahjaye/projects --hide-menubar --hide-tabbar &
     konsole --profile nix-term --title nix-term --workdir /etc/nixos &
     kate /etc/nixos/flake.nix /etc/nixos/configuration.nix /etc/nixos/home.nix
   '';
@@ -251,7 +254,7 @@ in
       hchc = "history -c && history -w && clear";
       nrs = "snr";
       #radar
-      snr = "powerprofilesctl launch --profile performance nixos-rebuild switch --sudo";
+      snr = "sudo powerprofilesctl launch --profile performance nixos-rebuild switch --sudo";
       #git
       ga = "git add .";
       gs = "git status";
@@ -301,6 +304,10 @@ in
         default = foxCom // { id = 0; isDefault = true; path = "w9xfxn15.default"; };
         cod     = foxCom // { id = 1; };
       };
+  };
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
   home.packages = with pkgs; [
     bat
