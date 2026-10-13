@@ -33,7 +33,8 @@ let
   startLayout = pkgs.writeShellScript "start-layout" ''
     sleep 4
     konsole --profile web-term --title web-term &
-    firefox &
+    firefox --new-window /etc/nixos/web-f.html &
+    firefox --new-window /etc/nixos/cod-f.html &
     obsidian &
     code &
     konsole --profile cod-term --title cod-term &
@@ -96,7 +97,7 @@ in
     window-rules = [
       # Web: terminal left, firefox right
       (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
-      (mk { description = "Web: firefox";  class = "firefox"; desktop = "Desktop_1"; geom = right; })
+      (mk { description = "Web: firefox";  class = "firefox"; title = "web"; desktop = "Desktop_1"; geom = right; })
 
       # Obs: fullscreen obsidian
       (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
@@ -104,6 +105,7 @@ in
       # Cod: vscode left, terminal right
       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
       (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
+      (mk { description = "Web: firefox";  class = "firefox"; title = "cod"; desktop = "Desktop_1"; geom = right; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
