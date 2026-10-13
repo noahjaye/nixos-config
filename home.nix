@@ -5,8 +5,22 @@ let
 
   half    = screen.w / 2;
   usableH = screen.h - screen.panel;
-  left  = { position = "0,0";                  size = "${toString half},${toString usableH}"; };
-  right = { position = "${toString half},0";   size = "${toString half},${toString usableH}"; };
+  halfH   = usableH / 2;
+
+  region = x: y: w: h: {
+    position = "${toString x},${toString y}";
+    size     = "${toString w},${toString h}";
+  };
+
+  # full-height halves
+  left  = region 0    0 half usableH;
+  right = region half 0 half usableH;
+
+  # quadrants
+  topLeft     = region 0    0     half halfH;
+  topRight    = region half 0     half halfH;
+  bottomLeft  = region 0    halfH half (usableH - halfH);
+  bottomRight = region half halfH half (usableH - halfH);
 
   mk = { description, class, title ? null, desktop, geom ? null, maximize ? false }: {
     inherit description;
@@ -102,10 +116,10 @@ in
       # Obs: fullscreen obsidian
       (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
 
-      # Cod: vscode left, terminal right
+      # Cod: vscode left, terminal bottom right, firefox top right
       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
-      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = right; })
-      (mk { description = "Web: firefox";  class = "firefox"; title = "cod"; desktop = "Desktop_1"; geom = right; })
+      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = bottomRight; })
+      (mk { description = "Web: firefox";  class = "firefox"; title = "cod"; desktop = "Desktop_1"; geom = topRight; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; })
