@@ -40,6 +40,21 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+
+  hardware.bluetooth = {
+    enable = true;
+#     powerOnBoot = false;
+  };
+
+
+  # pio python
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    zstd
+    zlib
+    stdenv.cc.cc.lib
+  ];
+
   # Set your time zone.
   time.timeZone = "America/New_York";
 
@@ -130,10 +145,12 @@
   environment.systemPackages = with pkgs; [
     obsidian
     vscode
-    gimp    
+    gimp
     qemu
     keepassxc
     tmux
+    networkmanager
+    tree
 #dual-boot things
     # efibootmgr
   ];

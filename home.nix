@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 
+
 let
   screen = { w = 1920; h = 1080; panel = 44; };
 
@@ -51,7 +52,7 @@ let
 
   # this is the very best way to do this, I am sure.
    startLayout = pkgs.writeShellScript "start-layout" ''
-   sudo powerprofilesctl launch --profile performance
+   sudo powerprofilesctl launch --profile performance --reason "ts startup was so slow"
     konsole --profile web-term --title web-term &
      firefox --new-window &
     MOZ_APP_REMOTINGNAME=fx-cod firefox --new-instance -P cod \
@@ -61,95 +62,10 @@ let
     konsole --profile cod-term --title cod-term --workdir /home/noahjaye/projects --hide-menubar --hide-tabbar &
     konsole --profile nix-term --title nix-term --workdir /etc/nixos &
     kate /etc/nixos/flake.nix /etc/nixos/configuration.nix /etc/nixos/home.nix
+
+    powerprofilesctl set power-saver
   '';
-  foxCom = {
-    settings = {
-      # startup
-      "browser.startup.page" = 3;
-      "browser.startup.homepage" = "chrome://browser/content/blanktab.html";
-      "browser.newtabpage.enabled" = false;
-      "browser.tabs.insertAfterCurrent" = true;
 
-      # UI
-      "browser.toolbars.bookmarks.visibility" = "never";
-      "sidebar.visibility" = "hide-launcher";
-
-      # privacy
-      "privacy.resistFingerprinting" = true;
-      "privacy.clearOnShutdown_v2.formdata" = true;
-
-      # urlbarsearch
-      "browser.search.suggest.enabled" = false;
-      "browser.urlbar.showSearchSuggestionsFirst" = false;
-      "browser.urlbar.suggest.bookmark" = false;
-      "browser.urlbar.suggest.engines" = false;
-      "browser.urlbar.suggest.history" = false;
-      "browser.urlbar.suggest.quickactions" = false;
-      "browser.urlbar.suggest.recentsearches" = false;
-      "browser.urlbar.suggest.searches" = false;
-      "browser.urlbar.suggest.topsites" = false;
-
-      # NOAI/misc
-      "browser.ai.control.default" = "blocked";
-      "browser.ai.control.linkPreviewKeyPoints" = "blocked";
-      "browser.ai.control.pdfjsAltText" = "blocked";
-      "browser.ai.control.sidebarChatbot" = "blocked";
-      "browser.ai.control.smartTabGroups" = "blocked";
-      "browser.ai.control.smartWindow" = "blocked";
-      "browser.ai.control.translations" = "blocked";
-      "browser.ml.chat.enabled" = false;
-      "browser.ml.chat.page" = false;
-      "browser.ml.linkPreview.enabled" = false;
-      "browser.tabs.groups.smart.enabled" = false;
-      "browser.tabs.groups.smart.userEnabled" = false;
-      "browser.translations.enable" = false;
-      "browser.smartwindow.memories.generateFromConversation" = false;
-      "browser.smartwindow.memories.generateFromHistory" = false;
-      "extensions.ml.enabled" = false;
-      "pdfjs.enableAltText" = false;
-    };
-
-    search = {
-      force = true;
-      default = "ddg";
-      # thank you https://nix-community.github.io/home-manager/options/home-manager/programs/firefox.html
-      engines = {
-        nix-packages = {
-          name = "Nix Packages";
-          urls = [{
-            template = "https://search.nixos.org/packages";
-            params = [
-              { name = "type"; value = "packages"; }
-              { name = "query"; value = "{searchTerms}"; }
-            ];
-          }];
-
-          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-          definedAliases = [ "@np" ];
-        };
-
-        nixos-wiki = {
-          name = "NixOS Wiki";
-          urls = [{ template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; }];
-          iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
-          definedAliases = [ "@nw" ];
-        };
-        nixos-options = {
-          name = "NixOS Options";
-          urls = [{
-            template = "https://search.nixos.org/options";
-            params = [
-              { name = "type"; value = "options"; }
-              { name = "query"; value = "{searchTerms}"; }
-            ];
-          }];
-
-          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-          definedAliases = [ "@no" ];
-        };
-      };
-    };
-  };
 
 in
 {
@@ -159,6 +75,9 @@ in
   home.sessionVariables = {
     NIX_SHELL_PRESERVE_PROMPT = 1;
   };
+  imports = [
+    (import ./programs/firefox.nix) # (2)
+  ];
 
   programs.plasma = {
     enable = true;
@@ -206,7 +125,7 @@ in
     window-rules = [
       # Web: terminal left, firefox right
       (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
-      (mk { description = "Web: firefox"; class = "^(?!.*fx-cod).*firefox"; classType = "regex"; desktop = "Desktop_1"; geom = right; force = true; })
+      (mk { description = "Web: firefox"; class = "^(?!.*fx-cod).*firefox"; classType = "regex"; desktop = "Desktop_1"; geom = right;})# force = true; })
 
       # Obs: fullscreen obsidian
       (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
@@ -214,7 +133,7 @@ in
       # Cod: vscode left, terminal bottom right, firefox top right
       (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
       (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = bottomRight; })
-        (mk { description = "Cod: firefox"; class = "fx-cod"; desktop = "Desktop_3"; geom = topRight; force = true; })
+        (mk { description = "Cod: firefox"; class = "fx-cod"; desktop = "Desktop_3"; geom = topRight; })#force = true; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
       (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; force = true; })
@@ -258,6 +177,14 @@ in
     name = "nix-term";
     extraConfig.General.Directory = "/etc/nixos";
   };
+  programs.vscode = {
+    enable = true;
+    profiles.default.userSettings = {
+      "clang-format.executable" = "clang-format";
+      "git.blame.editorDecoration.enabled" = true;
+      "chat.disableAIFeatures" = true;
+    };
+  };
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -267,14 +194,17 @@ in
       hchw = "history -r && history -a /home/noahjaye/myhis.txt && history -c";
       hchc = "hchw && clear";
       nrs = "snr";
+      zoom = " powerprofilesctl launch --profile performance --reason \"generic and unknowable speed\" ";
+      ncg = "zoom sudo nix-collect-garbage";
       #radar
-      snr = "sudo powerprofilesctl launch --profile performance nixos-rebuild switch";
+      snr = "zoom sudo nixos-rebuild switch";
       #git
       ga = "git add .";
       gs = "git status";
       gl = "git log --oneline";
       gc = "git commit -m";
       gp = "git push";
+      gwi = "git switch";
       #rusty
       cb = "cargo build";
       cr = "cargo run";
@@ -307,77 +237,12 @@ in
         fi
         num='\[\e[0m\]'
         if [ -n "$IN_NIX_SHELL" ]; then
-          num='\[\e[38;5;46m\]'
+          num='\[\e[38;5;105Nm\]'
         fi
         PS1='\[\e[95m\]\u\[\e[0m\] \W('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
       }
       PROMPT_COMMAND=__set_ps1
     '';
-  };
-  programs.firefox = {
-    enable = true;
-      profiles = {
-      # bad, probably bite bullet and hand over path
-        default = foxCom // { id = 0; isDefault = true; path = "w9xfxn15.default"; };
-        cod     = foxCom // { id = 1; };
-      };
-      policies = {
-        ExtensionSettings =
-          let
-            moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
-          in {
-            "*" .installation_mode = "blocked";
-
-            "uBlock0@raymondhill.net" = {
-              install_url = moz "ublock-origin";
-              installation_mode = "force_installed";
-              updates_disabled = true;
-            };
-
-            "{74145f27-f039-47ce-a470-a662b129930a}" = {
-              install_url = moz "clearurls";
-              installation_mode = "force_installed";
-              updates_disabled = true;
-            };
-          };
-
-        # Extension configuration
-        "3rdparty".Extensions = {
-          "uBlock0@raymondhill.net".adminSettings = {
-            userSettings = rec {
-              uiTheme = "dark";
-              uiAccentCustom = true;
-              uiAccentCustom0 = "#8300ff";
-
-              importedLists = [
-                "https://filters.adtidy.org/extension/ublock/filters/3.txt"
-                "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-              ];
-
-              externalLists = lib.concatStringsSep "\n" importedLists;
-            };
-
-            selectedFilterLists = [
-              "CZE-0"
-              "adguard-generic"
-              "adguard-annoyance"
-              "adguard-social"
-              "adguard-spyware-url"
-              "easylist"
-              "easyprivacy"
-              "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-              "plowe-0"
-              "ublock-abuse"
-              "ublock-badware"
-              "ublock-filters"
-              "ublock-privacy"
-              "ublock-quick-fixes"
-              "ublock-unbreak"
-              "urlhaus-1"
-            ];
-          };
-        };
-      };
   };
   programs.direnv = {
     enable = true;
@@ -393,6 +258,12 @@ in
       runtimeInputs = [ coreutils wl-clipboard ];
       text = ''
         cat "$@" | wl-copy
+      '';
+    })
+    (writeShellApplication {
+      name = "denv";
+      text = ''
+        echo "use flake" > .envrc && direnv allow;
       '';
     })
   ];
