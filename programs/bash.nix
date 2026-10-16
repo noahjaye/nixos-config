@@ -53,7 +53,7 @@
             fi
             num='\[\e[0m\]'
             if [ -n "$IN_NIX_SHELL" ]; then
-            num='\[\e[38;5;105Nm\]'
+            num='\[\e[38;5;105m\]'
             fi
             PS1='\[\e[95m\]\u\[\e[0m\] \W('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
         }

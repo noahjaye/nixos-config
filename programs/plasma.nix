@@ -121,7 +121,7 @@ in {
     hotkeys.commands."konsole-nixos" = {
       name = "Konsole in /etc/nixos";
       key = "Meta+Shift+N";
-      command = "konsole --workdir /etc/nixos";
+      command = "konsole --workdir /etc/nixos --profile nix-term";
     };
     input.keyboard.options = ["ctrl:ralt_rctrl"];
     #! Set up custom panels soon enough
