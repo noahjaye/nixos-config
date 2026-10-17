@@ -24,6 +24,7 @@ in {
     bat
     wl-clipboard
     complete-alias
+    comic-mono
     (writeShellApplication {
       name = "catc";
       runtimeInputs = [ coreutils wl-clipboard ];
