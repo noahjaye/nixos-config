@@ -56,7 +56,6 @@
                 num='\[\e[38;5;105m\]'
             fi
 
-            # index the current dir name if it repeats earlier in the path
             idx=""
             dname=''${PWD##*/}
             if [ "$PWD" != "$HOME" ] && [ -n "$dname" ]; then
@@ -66,7 +65,7 @@
                     [ "$p" = "$dname" ] && count=$((count + 1))
                 done
                 if [ "$count" -gt 1 ]; then
-                    idx='\[\e[90m\]:'"$count"'\[\e[0m\]'
+                    idx=':'"$count"'
                 fi
             fi
 
