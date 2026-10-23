@@ -111,12 +111,13 @@ in {
       (mk { description = "Nix: kate"; class = "org.kde.kate"; desktop = "Desktop_4"; geom = right; })
     ];
 
-    #is this a reasonable use of alt?
     shortcuts.kwin = {
       "Switch to Desktop 1" = "Alt+A";
       "Switch to Desktop 2" = "Alt+S";
       "Switch to Desktop 3" = "Alt+D";
       "Switch to Desktop 4" = "Alt+F";
+      "Walk Through Windows" = "none";
+      "Walk Through Windows (Reverse)" = "none";
     };
     hotkeys.commands."konsole-nixos" = {
       name = "Konsole in /etc/nixos";

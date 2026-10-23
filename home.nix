@@ -38,5 +38,12 @@ in {
         echo "use flake" > .envrc && direnv allow;
       '';
     })
+    (writeShellApplication {
+      name = "isli";
+      text = ''
+        test -L "$@" && echo y || echo n;
+      '';
+    })
+
   ];
 }

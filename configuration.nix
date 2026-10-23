@@ -130,8 +130,6 @@
     };
   };	
 
-  # To bypass this, git add -f shell.nix
-  # programs.git.ignores = [ "shell.nix" ];
   programs.steam = {
     enable = true;
   };  
@@ -152,7 +150,41 @@
     # efibootmgr
   ];
 
+
+  networking.networkmanager.ensureProfiles = {
+    environmentFiles = [ "/etc/nixos/nm-secrets.env" ];
+
+    profiles.Mac-WiFi = {
+      connection = {
+        id = "Mac-WiFi";
+        type = "wifi";
+        autoconnect = "true";
+      };
+      wifi = {
+        mode = "infrastructure";
+        ssid = "Mac-WiFi";
+      };
+      wifi-security.key-mgmt = "wpa-eap";
+      "802-1x" = {
+        eap = "peap;";
+        phase2-auth = "mschapv2";
+        identity = "$MAC_USER";
+        password = "$MAC_PASS";
+        ca-cert = "/etc/ssl/certs/ca-certificates.crt";
+        domain-suffix-match = "wireless.mcmaster.ca";
+      };
+      ipv4.method = "auto";
+      ipv6 = {
+        method = "auto";
+        addr-gen-mode = "stable-privacy";
+      };
+    };
+  };
+  services.resolved.enable = true;
+  networking.networkmanager.dns = "systemd-resolved";
   
+  networking.networkmanager.wifi.powersave = false;
+
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   # environment.systemPackages = with pkgs; [
