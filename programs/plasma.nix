@@ -116,8 +116,8 @@ in {
       "Switch to Desktop 2" = "Alt+S";
       "Switch to Desktop 3" = "Alt+D";
       "Switch to Desktop 4" = "Alt+F";
-      "Walk Through Windows" = "none";
-      "Walk Through Windows (Reverse)" = "none";
+#       "Walk Through Windows" = "none";
+#       "Walk Through Windows (Reverse)" = "none";
     };
     hotkeys.commands."konsole-nixos" = {
       name = "Konsole in /etc/nixos";
@@ -127,6 +127,7 @@ in {
     input.keyboard.options = ["ctrl:ralt_rctrl"];
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
+    configFile."kwinrc"."TabBox"."ShowTabBox" = false;
   };
 
 }

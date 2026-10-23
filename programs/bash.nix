@@ -56,6 +56,7 @@
                 num='\[\e[38;5;105m\]'
             fi
 
+
             idx=""
             dname=''${PWD##*/}
             if [ "$PWD" != "$HOME" ] && [ -n "$dname" ]; then
@@ -65,7 +66,7 @@
                     [ "$p" = "$dname" ] && count=$((count + 1))
                 done
                 if [ "$count" -gt 1 ]; then
-                    idx=':'"$count"'
+                    idx='\[\e[90m\]:'"$count"'\[\e[0m\]'
                 fi
             fi
 
