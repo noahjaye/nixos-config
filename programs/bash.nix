@@ -17,10 +17,12 @@
         #git
         ga = "git add .";
         gs = "git status -s";
+        gss = "git status";
         gl = "git log --oneline";
         gc = "git commit -m";
         gp = "git push";
         gwi = "git switch";
+        gso = "git show";
         #rusty
         cb = "cargo build";
         cr = "cargo run";
@@ -31,8 +33,10 @@
         nd = "nix develop";
         # code
         c = "code -r .";
+        # copy
+        wc = "wl-copy";
         };
-        initExtra = ''
+        initExtra = lib.mkAfter ''
         source "$(command -v complete_alias)"
         complete -F _complete_alias "''${!BASH_ALIASES[@]}"
         FIGNORE=".lock"
@@ -73,6 +77,16 @@
             PS1='\[\e[95m\]\u\[\e[0m\] \W'"$idx"'('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
         }
         PROMPT_COMMAND=__set_ps1
+
+
+        #Eventually move this to a real system so programs controls all initExtra related to them
+        atuin-bind '\e[1;3D' atuin-search
+
+        __atuin_big() {
+            local -x ATUIN_INLINE_HEIGHT=40
+            __atuin_history
+            }
+        atuin-bind '\e[1;3C' __atuin_big
         '';
     };
 }

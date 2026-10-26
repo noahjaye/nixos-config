@@ -114,8 +114,50 @@ foxCom = {
           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
           definedAliases = [ "@hm" ];
         };
+        tidal = {
+          name = "Tidal";
+          urls = [{
+            template = "https://tidal.com/search";
+            params = [
+              { name = "query"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@ti" ];
+        };
+        wookiepedia = {
+          name = "Wookiepedia";
+          urls = [{
+            template = "https://starwars.fandom.com/wiki/Special:Search";
+            params = [
+              { name = "query"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@wo" ];
+        };
+        obsidian = {
+          name = "Obsidian";
+          urls = [{
+            template = "https://community.obsidian.md/search";
+            params = [
+              { name = "query"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@ob" ];
+        };
       };
     };
+  };
+  foxKeys = {
+    goBackKb = { modifiers = "alt"; key = ","; };
+    goForwardKb = { modifiers = "alt"; key = "."; };
+    key_search = { modifiers  = "alt"; key = "K"; };
+    key_search2 = { modifiers = "alt"; key = "J"; };
   };
 in {
     programs.firefox = {
@@ -192,4 +234,9 @@ in {
             };
         };
     };
+    home.file = lib.listToAttrs (map (name: {
+      name  = ".config/mozilla/firefox/${config.programs.firefox.profiles.${name}.path}/customKeys.json";
+      value = { text = builtins.toJSON foxKeys; force = true; };
+    }) [ "default" "cod" ]);
+
 }
