@@ -16,7 +16,7 @@
         snr = "zoom sudo nixos-rebuild switch";
         #git
         ga = "git add .";
-        gs = "git status";
+        gs = "git status -s";
         gl = "git log --oneline";
         gc = "git commit -m";
         gp = "git push";

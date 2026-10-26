@@ -45,6 +45,10 @@ foxCom = {
       "browser.smartwindow.memories.generateFromHistory" = false;
       "extensions.ml.enabled" = false;
       "pdfjs.enableAltText" = false;
+
+      "browser.download.useDownloadDir" = true;
+      "browser.download.folderList" = 2;
+      "browser.download.dir" = "/home/noahjaye/downloads/firefox";
     };
 
     search = {
