@@ -22,7 +22,10 @@
   enable = true;
   };
 
+  # build the arm
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
+  nix.settings.extra-platforms = [ "aarch64-linux" ];
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -139,20 +142,20 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     obsidian
-    vscode
     gimp
     qemu
     keepassxc
-    tmux
-    networkmanager
     tree
+    neovim
+    pkgs.man-pages
+    pkgs.man-pages-posix
 #dual-boot things
     # efibootmgr
   ];
 
 
   networking.networkmanager.ensureProfiles = {
-    environmentFiles = [ "/etc/nixos/nm-secrets.env" ];
+    environmentFiles = [ "/etc/nixos/nm_secrets.env" ];
 
     profiles.Mac-WiFi = {
       connection = {
@@ -185,6 +188,11 @@
   
   networking.networkmanager.wifi.powersave = false;
 
+  # raspberry pi connection
+  networking.networkmanager.ensureProfiles.profiles.pi = {
+    connection = { id = "pi"; type = "ethernet"; interface-name = "enp5s0"; };
+    ipv4 = { method = "manual"; address1 = "192.168.50.1/24"; };
+  };
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   # environment.systemPackages = with pkgs; [

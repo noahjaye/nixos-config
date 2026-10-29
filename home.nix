@@ -25,6 +25,7 @@ in {
     wl-clipboard
     complete-alias
     comic-mono
+    gcc
     (writeShellApplication {
       name = "catc";
       runtimeInputs = [ coreutils wl-clipboard ];

@@ -19,6 +19,7 @@
         gs = "git status -s";
         gss = "git status";
         gl = "git log --oneline";
+        gll = "git log";
         gc = "git commit -m";
         gp = "git push";
         gwi = "git switch";
@@ -39,7 +40,7 @@
         initExtra = lib.mkAfter ''
         source "$(command -v complete_alias)"
         complete -F _complete_alias "''${!BASH_ALIASES[@]}"
-        FIGNORE=".lock"
+        FIGNORE=".lock:.o:.direnv"
         export NIX_SHELL_PRESERVE_PROMPT=1
         __set_ps1() {
             local br status num brcolor idx dname p count parts
@@ -76,17 +77,17 @@
 
             PS1='\[\e[95m\]\u\[\e[0m\] \W'"$idx"'('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
         }
-        PROMPT_COMMAND=__set_ps1
+        PROMPT_COMMAND="__set_ps1''${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
 
         #Eventually move this to a real system so programs controls all initExtra related to them
-        atuin-bind '\e[1;3D' atuin-search
+        atuin-bind '\e[6~' atuin-search
 
         __atuin_big() {
             local -x ATUIN_INLINE_HEIGHT=40
             __atuin_history
             }
-        atuin-bind '\e[1;3C' __atuin_big
+        atuin-bind '\e[5~' __atuin_big
         '';
     };
 }

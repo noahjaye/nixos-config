@@ -48,7 +48,10 @@ foxCom = {
 
       "browser.download.useDownloadDir" = true;
       "browser.download.folderList" = 2;
-      "browser.download.dir" = "/home/noahjaye/downloads/firefox";
+      "browser.download.dir" = "/home/noahjaye/Downloads/firefox";
+
+      # new way to web
+      "ui.key.menuAccessKeyFocuses" = false;
     };
 
     search = {
@@ -119,7 +122,7 @@ foxCom = {
           urls = [{
             template = "https://tidal.com/search";
             params = [
-              { name = "query"; value = "{searchTerms}"; }
+              { name = "q"; value = "{searchTerms}"; }
             ];
           }];
 
@@ -143,12 +146,48 @@ foxCom = {
           urls = [{
             template = "https://community.obsidian.md/search";
             params = [
-              { name = "query"; value = "{searchTerms}"; }
+              { name = "q"; value = "{searchTerms}"; }
             ];
           }];
 
 #           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
           definedAliases = [ "@ob" ];
+        };
+        arch = {
+          name = "arch";
+          urls = [{
+            template = "https://man.archlinux.org/search";
+            params = [
+              { name = "q"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@ar" ];
+        };
+        arch = {
+          name = "arch";
+          urls = [{
+            template = "https://man.archlinux.org/search";
+            params = [
+              { name = "q"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@ar" ];
+        };
+        arch = {
+          name = "arch";
+          urls = [{
+            template = "https://man.archlinux.org/search";
+            params = [
+              { name = "q"; value = "{searchTerms}"; }
+            ];
+          }];
+
+#           icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@ar" ];
         };
       };
     };
@@ -172,6 +211,7 @@ in {
             let
                 moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
             in {
+              # addons.mozilla.org
                 "*" .installation_mode = "blocked";
 
                 "uBlock0@raymondhill.net" = {
@@ -185,53 +225,58 @@ in {
                 installation_mode = "force_installed";
                 updates_disabled = true;
                 };
+
+
+
+
             };
 
             # Extension configuration
             "3rdparty".Extensions = {
-            "uBlock0@raymondhill.net".adminSettings = {
-                userSettings = rec {
-                uiTheme = "dark";
-                uiAccentCustom = true;
-                uiAccentCustom0 = "#8300ff";
+              "uBlock0@raymondhill.net".adminSettings = {
+                  userSettings = rec {
+                  uiTheme = "dark";
+                  uiAccentCustom = true;
+                  uiAccentCustom0 = "#8300ff";
 
-                importedLists = [
-                    "https://filters.adtidy.org/extension/ublock/filters/3.txt"
-                    "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-                ];
+                  importedLists = [
+                      "https://filters.adtidy.org/extension/ublock/filters/3.txt"
+                      "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+                  ];
 
-                externalLists = lib.concatStringsSep "\n" importedLists;
-                };
+                  externalLists = lib.concatStringsSep "\n" importedLists;
+                  };
 
-                selectedFilterLists = [
-                "CZE-0"
-                "adguard-generic"
-                "adguard-annoyance"
-                "adguard-social"
-                "adguard-spyware-url"
-                "easylist"
-                "easyprivacy"
-                "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-                "plowe-0"
-                "ublock-abuse"
-                "ublock-badware"
-                "ublock-filters"
-                "ublock-privacy"
-                "ublock-quick-fixes"
-                "ublock-unbreak"
-                "urlhaus-1"
-                "userFilters"
-                ];
-                userFilters = ''
-                www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])
-                www.youtube.com##ytd-reel-shelf-renderer
-                www.youtube.com##ytd-video-renderer:has(a[href^="/shorts/"])
-                www.youtube.com##ytd-guide-entry-renderer:has(a[title="Shorts"])
-                www.youtube.com##ytd-mini-guide-entry-renderer[aria-label="Shorts"]
-                ||youtube.com/shorts/$document
-                '';
+                  selectedFilterLists = [
+                  "CZE-0"
+                  "adguard-generic"
+                  "adguard-annoyance"
+                  "adguard-social"
+                  "adguard-spyware-url"
+                  "easylist"
+                  "easyprivacy"
+                  "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+                  "plowe-0"
+                  "ublock-abuse"
+                  "ublock-badware"
+                  "ublock-filters"
+                  "ublock-privacy"
+                  "ublock-quick-fixes"
+                  "ublock-unbreak"
+                  "urlhaus-1"
+                  "userFilters"
+                  ];
+                  userFilters = ''
+                  www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])
+                  www.youtube.com##ytd-reel-shelf-renderer
+                  www.youtube.com##ytd-video-renderer:has(a[href^="/shorts/"])
+                  www.youtube.com##ytd-guide-entry-renderer:has(a[title="Shorts"])
+                  www.youtube.com##ytd-mini-guide-entry-renderer[aria-label="Shorts"]
+                  ||youtube.com/shorts/$document
+                  '';
+              };
             };
-            };
+
         };
     };
     home.file = lib.listToAttrs (map (name: {

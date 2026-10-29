@@ -124,7 +124,7 @@ in {
       key = "Meta+Shift+N";
       command = "konsole --workdir /etc/nixos --profile nix-term";
     };
-    input.keyboard.options = ["ctrl:ralt_rctrl"];
+    input.keyboard.options = ["ctrl:ralt_rctrl" "caps:escape"];
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
     configFile."kwinrc"."TabBox"."ShowTabBox" = false;
