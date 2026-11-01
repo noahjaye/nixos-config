@@ -7,6 +7,13 @@
       "chat.disableAIFeatures" = true;
       "editor.fontFamily" = "Comic Mono, monospace";
       "editor.fontSize" = 14;
+      "search.exclude" = {
+        "**/.direnv" = true;
+      };
+      "files.watcherExclude" = {
+        "**/.direnv/**" = true;
+      };
+      "search.followSymlinks" = false;
     };
   };
 }

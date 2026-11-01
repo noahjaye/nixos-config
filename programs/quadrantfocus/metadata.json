@@ -1,0 +1,12 @@
+{
+    "KPlugin": {
+        "Id": "quadrantfocus",
+        "Name": "Quadrant Focus",
+        "Description": "Shortcuts to focus the window in each screen quadrant",
+        "Version": "1.0",
+        "License": "MIT"
+    },
+    "KPackageStructure": "KWin/Script",
+    "X-Plasma-API": "javascript",
+    "X-Plasma-MainScript": "code/main.js"
+}

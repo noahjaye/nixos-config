@@ -14,8 +14,9 @@
 
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
+  home-manager.backupFileExtension = "hm-bak";
   home-manager.users.noahjaye = import ./home.nix;
+
 
   # CUSTOM STUFF HERE
   services.tailscale = {
@@ -188,7 +189,16 @@
   
   networking.networkmanager.wifi.powersave = false;
 
-  # raspberry pi connection
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings.main = {
+        capslock = "overload(control, esc)";
+      };
+    };
+  };
+  # raspberry pi connection/what to set all peripheral ethernet things to
   networking.networkmanager.ensureProfiles.profiles.pi = {
     connection = { id = "pi"; type = "ethernet"; interface-name = "enp5s0"; };
     ipv4 = { method = "manual"; address1 = "192.168.50.1/24"; };

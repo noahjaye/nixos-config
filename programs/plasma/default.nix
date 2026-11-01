@@ -55,6 +55,7 @@ in {
     overrideConfig = true;
     session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
     workspace.wallpaper = "${config.home.homeDirectory}/wallpapers/delysium.jpg";
+    configFile.kwinrc.Plugins.quadrantfocusEnabled = true;
     kwin = {
       effects = {
         desktopSwitching.animation = "off";
@@ -118,13 +119,16 @@ in {
       "Switch to Desktop 4" = "Alt+F";
 #       "Walk Through Windows" = "none";
 #       "Walk Through Windows (Reverse)" = "none";
+      "Focus Top Left Pane"     = "Alt+I";
+      "Focus Top Right Pane"    = "Alt+O";
+      "Focus Bottom Left Pane"  = "Alt+J";
+      "Focus Bottom Right Pane" = "Alt+K";
     };
     hotkeys.commands."konsole-nixos" = {
       name = "Konsole in /etc/nixos";
       key = "Meta+Shift+N";
       command = "konsole --workdir /etc/nixos --profile nix-term";
     };
-    input.keyboard.options = ["ctrl:ralt_rctrl" "caps:escape"];
     #! Set up custom panels soon enough
     spectacle.shortcuts.captureActiveWindow = "Meta+Print";
     configFile."kwinrc"."TabBox"."ShowTabBox" = false;

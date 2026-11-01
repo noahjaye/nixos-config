@@ -1,16 +1,17 @@
 { config, lib, pkgs, ... }:
 
 let
-dir = ./programs;
+  dir = ./programs;
   entries = builtins.readDir dir;
 
   files = builtins.filter
     (name:
-      entries.${name} == "regular"
-      && builtins.match ".*\\.nix" name != null
+      (entries.${name} == "regular"
+      && lib.hasSuffix ".nix" name
       && name != "default.nix")
+    || (entries.${name} == "directory"
+      && builtins.pathExists (dir + "/${name}/default.nix")))
     (builtins.attrNames entries);
-
 in {
   home.username = "noahjaye";
   home.homeDirectory = "/home/noahjaye";

@@ -26,7 +26,11 @@ in {
       LocalTabTitleFormat=${n}
       RemoteTabTitleFormat=${n}
     '';
-  }) [ "web-term" "cod-term" "nix-term" ]);
+  }) [ "web-term" "cod-term" "nix-term" ])
+  # it was yelling
+  // {
+    "kwin/scripts/quadrantfocus".source = ../quadrantfocus;
+  };
 
   xdg.configFile."autostart/window-layout.desktop".text = ''
     [Desktop Entry]
