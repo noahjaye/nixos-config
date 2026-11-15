@@ -16,30 +16,37 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
 
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.sharedModules = [
-            inputs.plasma-manager.homeModules.plasma-manager
-          ];
-        }
+        modules = [
+          ./configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.sharedModules = [
+              inputs.plasma-manager.homeModules.plasma-manager
+            ];
+          }
 
-        {
-          virtualisation.vmVariant = {
-            virtualisation = {
-              memorySize = 4096;
-              cores = 4;
+          {
+            virtualisation.vmVariant = {
+              virtualisation = {
+                memorySize = 4096;
+                cores = 4;
+              };
+
+              users.users.noahjaye.initialPassword = "vm";
             };
-
-            users.users.noahjaye.initialPassword = "vm";
-          };
-        }
-      ];
+          }
+        ];
+      };
     };
-  };
 }

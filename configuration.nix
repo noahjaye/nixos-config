@@ -4,23 +4,20 @@
 
 { config, pkgs, ... }:
 
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-  
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "hm-bak";
   home-manager.users.noahjaye = import ./home.nix;
 
-
   # CUSTOM STUFF HERE
   services.tailscale = {
-  enable = true;
+    enable = true;
   };
 
   # build the arm
@@ -37,16 +34,17 @@
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  nix.settings.experimental-features = [ "nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   # Enable networking
   networking.networkmanager.enable = true;
 
-
   hardware.bluetooth = {
     enable = true;
-#     powerOnBoot = false;
+    #     powerOnBoot = false;
   };
-
 
   # pio python
   programs.nix-ld.enable = true;
@@ -81,7 +79,6 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-  
 
   ## NOAH  services.tailscale.enable = true;
 
@@ -113,32 +110,23 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."noahjaye" = {
-#    hashedPassword = builtins.readFile "${config.home.homeDirectory}.password";
+    #    hashedPassword = builtins.readFile "${config.home.homeDirectory}.password";
     isNormalUser = true;
     description = "Noah Jaye";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
+      #  thunderbird
     ];
   };
- 
-
-  # Install not firefox
-  programs.git = {
-    enable = true;
-    config = {
-      user.name = "noahjaye";
-      user.email = "noahjaye@gmail.com";
-      init.defaultBranch = "main";
-    };
-  };	
 
   programs.steam = {
     enable = true;
-  };  
+  };
 
-  
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -150,10 +138,9 @@
     neovim
     pkgs.man-pages
     pkgs.man-pages-posix
-#dual-boot things
+    #dual-boot things
     # efibootmgr
   ];
-
 
   networking.networkmanager.ensureProfiles = {
     environmentFiles = [ "/etc/nixos/nm_secrets.env" ];
@@ -186,7 +173,7 @@
   };
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
-  
+
   networking.networkmanager.wifi.powersave = false;
 
   services.keyd = {
@@ -200,8 +187,15 @@
   };
   # raspberry pi connection/what to set all peripheral ethernet things to
   networking.networkmanager.ensureProfiles.profiles.pi = {
-    connection = { id = "pi"; type = "ethernet"; interface-name = "enp5s0"; };
-    ipv4 = { method = "manual"; address1 = "192.168.50.1/24"; };
+    connection = {
+      id = "pi";
+      type = "ethernet";
+      interface-name = "enp5s0";
+    };
+    ipv4 = {
+      method = "manual";
+      address1 = "192.168.50.1/24";
+    };
   };
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).

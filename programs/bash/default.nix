@@ -1,9 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-    programs.bash = {
-        enable = true;
-        shellAliases = import ./shellAliases.nix;
-        initExtra = import ./initExtra.nix {inherit lib;};
-    };
+  programs.bash = {
+    enable = true;
+    shellAliases = import ./shellAliases.nix;
+    initExtra = import ./initExtra.nix { inherit lib; };
+  };
 }

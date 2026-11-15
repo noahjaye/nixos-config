@@ -1,55 +1,82 @@
-{config, lib, pkgs, ...} :
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-    screen = { w = 1920; h = 1080; panel = 44; };
-
-  half    = screen.w / 2;
-  usableH = screen.h - screen.panel;
-  halfH   = usableH / 2;
-
-    region = x: y: w: h: {
-    position = "${toString x},${toString y}";
-    size     = "${toString w},${toString h}";
+  screen = {
+    w = 1920;
+    h = 1080;
+    panel = 44;
   };
 
-   left  = region 0    0 half usableH;
+  half = screen.w / 2;
+  usableH = screen.h - screen.panel;
+  halfH = usableH / 2;
+
+  region = x: y: w: h: {
+    position = "${toString x},${toString y}";
+    size = "${toString w},${toString h}";
+  };
+
+  left = region 0 0 half usableH;
   right = region half 0 half usableH;
 
   # I am lazy
   split = usableH * 2 / 3;
 
-  topLeft     = region 0    0      half halfH;
-  topRight    = region half 0      half split;
-  bottomLeft  = region 0    halfH  half (usableH - halfH);
+  topLeft = region 0 0 half halfH;
+  topRight = region half 0 half split;
+  bottomLeft = region 0 halfH half (usableH - halfH);
   bottomRight = region half split half (usableH - split);
 
-  mk = { description, class, classType ? "substring", title ? null, desktop, geom ? null, maximize ? false, force ? false }: {
-    inherit description;
-    match = {
-      window-class = { value = class; type = classType; };
-      window-types = [ "normal" ];
-    } // lib.optionalAttrs (title != null) {
-      title = { value = title; type = "substring"; };
-    };
-    apply = {
-      desktops = {
-        value = desktop;
-        apply = "force";
+  mk =
+    {
+      description,
+      class,
+      classType ? "substring",
+      title ? null,
+      desktop,
+      geom ? null,
+      maximize ? false,
+      force ? false,
+    }:
+    {
+      inherit description;
+      match = {
+        window-class = {
+          value = class;
+          type = classType;
+        };
+        window-types = [ "normal" ];
+      }
+      // lib.optionalAttrs (title != null) {
+        title = {
+          value = title;
+          type = "substring";
+        };
       };
-    }
-    // lib.optionalAttrs (geom != null) (
-      lib.mapAttrs (_: v: {
-        value = v;
-        apply = if force then "force" else "initially";
-      }) geom
-    )
-    // lib.optionalAttrs maximize {
-      maximizehoriz = true;
-      maximizevert = true;
+      apply = {
+        desktops = {
+          value = desktop;
+          apply = "force";
+        };
+      }
+      // lib.optionalAttrs (geom != null) (
+        lib.mapAttrs (_: v: {
+          value = v;
+          apply = if force then "force" else "initially";
+        }) geom
+      )
+      // lib.optionalAttrs maximize {
+        maximizehoriz = true;
+        maximizevert = true;
+      };
     };
-  };
 
-
-in {
+in
+{
   programs.plasma = {
     enable = true;
     overrideConfig = true;
@@ -71,45 +98,94 @@ in {
       };
       virtualDesktops = {
         number = 4;
-        names = [ "Web" "Obs" "Cod" "Nix" ];
+        names = [
+          "Web"
+          "Obs"
+          "Cod"
+          "Nix"
+        ];
       };
     };
-#       window-rules = [
-#         {
-#           description = "TEST: Konsole on Web";
-#
-#           match = {
-#             window-class = {
-#               value = "konsole";
-#               type = "substring";
-#             };
-#             window-types = [ "normal" ];
-#           };
-#
-#           apply = {
-#             desktops = {
-#               value = "Desktop_1";
-#               apply = "force";
-#             };
-#           };
-#         }
-#       ];
+    #       window-rules = [
+    #         {
+    #           description = "TEST: Konsole on Web";
+    #
+    #           match = {
+    #             window-class = {
+    #               value = "konsole";
+    #               type = "substring";
+    #             };
+    #             window-types = [ "normal" ];
+    #           };
+    #
+    #           apply = {
+    #             desktops = {
+    #               value = "Desktop_1";
+    #               apply = "force";
+    #             };
+    #           };
+    #         }
+    #       ];
     window-rules = [
       # Web: terminal left, firefox right
-      (mk { description = "Web: terminal"; class = "org.kde.konsole"; title = "web-term"; desktop = "Desktop_1"; geom = left; })
-      (mk { description = "Web: firefox"; class = "^(?!.*fx-cod).*firefox"; classType = "regex"; desktop = "Desktop_1"; geom = right;})# force = true; })
+      (mk {
+        description = "Web: terminal";
+        class = "org.kde.konsole";
+        title = "web-term";
+        desktop = "Desktop_1";
+        geom = left;
+      })
+      (mk {
+        description = "Web: firefox";
+        class = "^(?!.*fx-cod).*firefox";
+        classType = "regex";
+        desktop = "Desktop_1";
+        geom = right;
+      }) # force = true; })
 
       # Obs: fullscreen obsidian
-      (mk { description = "Obs: obsidian"; class = "obsidian"; desktop = "Desktop_2"; maximize = true; })
+      (mk {
+        description = "Obs: obsidian";
+        class = "obsidian";
+        desktop = "Desktop_2";
+        maximize = true;
+      })
 
       # Cod: vscode left, terminal bottom right, firefox top right
-      (mk { description = "Cod: vscode";   class = "code"; desktop = "Desktop_3"; geom = left; })
-      (mk { description = "Cod: terminal"; class = "org.kde.konsole"; title = "cod-term"; desktop = "Desktop_3"; geom = bottomRight; })
-        (mk { description = "Cod: firefox"; class = "fx-cod"; desktop = "Desktop_3"; geom = topRight; })#force = true; })
+      (mk {
+        description = "Cod: vscode";
+        class = "code";
+        desktop = "Desktop_3";
+        geom = left;
+      })
+      (mk {
+        description = "Cod: terminal";
+        class = "org.kde.konsole";
+        title = "cod-term";
+        desktop = "Desktop_3";
+        geom = bottomRight;
+      })
+      (mk {
+        description = "Cod: firefox";
+        class = "fx-cod";
+        desktop = "Desktop_3";
+        geom = topRight;
+      }) # force = true; })
 
       # Nix: terminal left, second firefox right (fix second firefox!)
-      (mk { description = "Nix: terminal"; class = "org.kde.konsole"; title = "nix-term"; desktop = "Desktop_4"; geom = left; force = true; })
-      (mk { description = "Nix: kate"; class = "org.kde.kate"; desktop = "Desktop_4"; geom = right; })
+      (mk {
+        description = "Nix: terminal";
+        class = "org.kde.konsole";
+        title = "nix-term";
+        desktop = "Desktop_4";
+        geom = left;
+      }) # force = true; })
+      (mk {
+        description = "Nix: kate";
+        class = "org.kde.kate";
+        desktop = "Desktop_4";
+        geom = right;
+      })
     ];
 
     shortcuts.kwin = {
@@ -117,11 +193,11 @@ in {
       "Switch to Desktop 2" = "Alt+S";
       "Switch to Desktop 3" = "Alt+D";
       "Switch to Desktop 4" = "Alt+F";
-#       "Walk Through Windows" = "none";
-#       "Walk Through Windows (Reverse)" = "none";
-      "Focus Top Left Pane"     = "Alt+I";
-      "Focus Top Right Pane"    = "Alt+O";
-      "Focus Bottom Left Pane"  = "Alt+J";
+      #       "Walk Through Windows" = "none";
+      #       "Walk Through Windows (Reverse)" = "none";
+      "Focus Top Left Pane" = "Alt+I";
+      "Focus Top Right Pane" = "Alt+O";
+      "Focus Bottom Left Pane" = "Alt+J";
       "Focus Bottom Right Pane" = "Alt+K";
     };
     hotkeys.commands."konsole-nixos" = {

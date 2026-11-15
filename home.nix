@@ -1,23 +1,27 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   dir = ./programs;
   entries = builtins.readDir dir;
 
-  files = builtins.filter
-    (name:
-      (entries.${name} == "regular"
-      && lib.hasSuffix ".nix" name
-      && name != "default.nix")
-    || (entries.${name} == "directory"
-      && builtins.pathExists (dir + "/${name}/default.nix")))
-    (builtins.attrNames entries);
-in {
+  files = builtins.filter (
+    name:
+    (entries.${name} == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
+    || (entries.${name} == "directory" && builtins.pathExists (dir + "/${name}/default.nix"))
+  ) (builtins.attrNames entries);
+in
+{
   home.username = "noahjaye";
   home.homeDirectory = "/home/noahjaye";
   home.stateVersion = "26.05";
   home.sessionVariables = {
     NIX_SHELL_PRESERVE_PROMPT = 1;
+    _ZO_EXCLUDE_DIRS = "$HOME:/nix/store/*";
   };
   imports = map (name: dir + "/${name}") files;
 
@@ -27,9 +31,20 @@ in {
     complete-alias
     comic-mono
     gcc
+    nixfmt
+    perf
+    # the new age
+    uv
+    hexyl
+    ripgrep
+    fd
+    jq # need to learn this
     (writeShellApplication {
       name = "catc";
-      runtimeInputs = [ coreutils wl-clipboard ];
+      runtimeInputs = [
+        coreutils
+        wl-clipboard
+      ];
       text = ''
         cat "$@" | wl-copy
       '';
@@ -45,6 +60,10 @@ in {
       text = ''
         test -L "$@" && echo y || echo n;
       '';
+    })
+    (writeShellApplication {
+      name = "gitscan";
+      text = builtins.readFile ./programs/scripts/gitscan.sh;
     })
 
   ];

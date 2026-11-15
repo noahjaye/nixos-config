@@ -1,4 +1,10 @@
-{ config, lib, pkgs, ... } : {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   programs.vscode = {
     enable = true;
     profiles.default.userSettings = {
@@ -14,6 +20,14 @@
         "**/.direnv/**" = true;
       };
       "search.followSymlinks" = false;
+      "window.restoreWindows" = "all";
+      "workbench.startupEditor" = "none";
+      "explorer.openEditors.visible" = 0;
+      "[rust]" = {
+        "editor.defaultFormatter" = "rust-lang.rust-analyzer";
+        "editor.formatOnSave" = true;
+        "editor.formatOnPaste" = true;
+      };
     };
   };
 }
