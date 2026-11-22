@@ -103,6 +103,11 @@
     # jack.enable = true;
   };
 
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 16*1024;
+  }];
+
   services.openssh.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -138,6 +143,8 @@
     neovim
     pkgs.man-pages
     pkgs.man-pages-posix
+    usbutils
+    htop
     #dual-boot things
     # efibootmgr
   ];

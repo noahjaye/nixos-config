@@ -36,9 +36,9 @@ in
     # the new age
     uv
     hexyl
+    xxd
     ripgrep
     fd
-    jq # need to learn this
     (writeShellApplication {
       name = "catc";
       runtimeInputs = [

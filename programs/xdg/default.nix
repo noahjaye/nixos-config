@@ -33,6 +33,7 @@ in
               [General]
               Name=${n}
               Parent=FALLBACK/
+              Command=tmux new-session -A -s ${n}
               LocalTabTitleFormat=${n}
               RemoteTabTitleFormat=${n}
             '';

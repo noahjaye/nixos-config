@@ -16,6 +16,7 @@
   gp = "git push";
   gwi = "git switch";
   gso = "git show";
+  gd = "git diff";
   gds = "git diff --staged";
   #rusty
   cb = "zoom cargo build";
@@ -23,6 +24,7 @@
   cbr = "zoom cargo build --release";
   #wlclip
   p = "pwd | wl-copy";
+  pp = ''cd "$(wp)"'';
   #flakes
   nf = "nix flake";
   nd = "nix develop";

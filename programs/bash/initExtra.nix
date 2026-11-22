@@ -36,8 +36,10 @@ lib.mkAfter ''
               idx='\[\e[90m\]:'"$count"'\[\e[0m\]'
           fi
       fi
+      # increase zoxide churn
+      # zoxide add --score 10000 /home/noahjaye/Downloads/penis
 
-      PS1='\[\e[95m\]\u\[\e[0m\] \W'"$idx"'('"$brcolor""$br"'\[\e[0m\]) '"$num"'\!\[\e[0m\]\$ '
+      PS1='\[\e[95m\]\u\[\e[0m\] \W'"$idx"' '"$brcolor""$br"'\[\e[0m\] '"$num"'\!\[\e[0m\]\$ '
   }
   PROMPT_COMMAND="__set_ps1''${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
