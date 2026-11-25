@@ -24,7 +24,7 @@
   cbr = "zoom cargo build --release";
   #wlclip
   p = "pwd | wl-copy";
-  pp = ''cd "$(wp)"'';
+  P = ''cd "$(wp)"'';
   #flakes
   nf = "nix flake";
   nd = "nix develop";
